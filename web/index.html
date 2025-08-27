@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Monitoreo PLC</title>
+  <meta name="theme-color" content="#0f172a"/>
+  <style>
+    :root{color-scheme:light dark}
+    body{font-family:system-ui,Arial,sans-serif;margin:20px;max-width:960px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+    .card{border:1px solid #ddd;padding:14px;border-radius:10px}
+    h1{margin:0 0 12px 0}
+    pre{background:#f6f6f6;padding:10px;border-radius:8px;overflow:auto}
+    .kv{display:grid;grid-template-columns:1fr auto;gap:6px}
+    .ok{color:green}.err{color:#b91c1c}
+  </style>
+</head>
+<body>
+  <h1>Monitoreo PLC</h1>
+  <div class="card">
+    Estado API: <span id="status">—</span>
+    <button id="btn" style="float:right">Conectar</button>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Variables (HR)</h3>
+      <div id="tags" class="kv">—</div>
+    </div>
+    <div class="card">
+      <h3>Salidas (Y)</h3>
+      <div id="y" class="kv">—</div>
+    </div>
+    <div class="card">
+      <h3>Marcas (M)</h3>
+      <div id="m" class="kv">—</div>
+    </div>
+  </div>
+
+  <script>
+    let timer=null;
+    const $ = s => document.querySelector(s);
+
+    async function poll(){
+      try{
+        const h = await fetch('/health').then(r=>r.json());
+        $('#status').textContent = h.ok ? 'OK' : 'ERROR';
+        $('#status').className = h.ok ? 'ok' : 'err';
+
+        const t = await fetch('/tags').then(r=>r.json());
+        renderKV('#tags', t);
+
+        const io = await fetch('/io').then(r=>r.json());
+        renderKV('#y', io.Y || {});
+        renderKV('#m', io.M || {});
+      }catch(e){
+        $('#status').textContent = 'SIN CONEXIÓN';
+        $('#status').className = 'err';
+      }
+    }
+
+    function renderKV(sel, obj){
+      const cont = $(sel);
+      cont.innerHTML = '';
+      const keys = Object.keys(obj);
+      if(!keys.length){ cont.textContent='—'; return; }
+      keys.forEach(k=>{
+        const kdiv = document.createElement('div');
+        const vdiv = document.createElement('div');
+        kdiv.textContent = k;
+        vdiv.textContent = obj[k];
+        cont.appendChild(kdiv);
+        cont.appendChild(vdiv);
+      });
+    }
+
+    $('#btn').onclick = ()=>{
+      if(timer){ clearInterval(timer); timer=null; $('#btn').textContent='Conectar'; return; }
+      poll(); timer = setInterval(poll, 1000); $('#btn').textContent='Detener';
+    };
+  </script>
+</body>
+</html>
