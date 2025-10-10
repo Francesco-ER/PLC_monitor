@@ -31,10 +31,9 @@ Actualmente en desarrollo con **Python**, pruebas de **Docker** y diseño inicia
 ---
 
 ## 🌐 Próximos pasos
-- Implementar conexión con PLC real o simulado.  
+- Desplegar en servidor cloud para uso online.
 - Añadir persistencia en base de datos (Postgres/Supabase).  
 - Contenerizar servicios con Docker.  
-- Desplegar API en VPS y UI en Vercel.  
 - Crear sistema de alertas para estados críticos.  
 
 ---
