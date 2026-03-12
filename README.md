@@ -1,4 +1,4 @@
-# 🔧 PLC Monitor — Python + Dashboard en Tiempo Real (En Desarrollo)
+# 🔧 PlView — Python + Dashboard en Tiempo Real (En Desarrollo)
 
 Proyecto en curso: aplicación de monitoreo industrial para **PLC (Controladores Lógicos Programables)**.  
 Actualmente en desarrollo con **Python**, pruebas de **Docker** y diseño inicial de la base de datos.  
@@ -46,7 +46,6 @@ Demuestra mi enfoque en **automatización industrial**, **monitoreo en tiempo re
 
 ### 1. Instalar dependencias
 ```bash
-cd api
 python -m venv .venv
-.\.venv\Scripts\activate
-pip install -r requirements.txt
+.venv/Scripts/activate
+python -m pip install -r requirements.txt
